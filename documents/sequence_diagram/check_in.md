@@ -1,5 +1,6 @@
 ```mermaid
-actor User
+sequenceDiagram
+	actor User
   User->>MyFridgeScreen: Opens
   MyFridgeScreen->>FridgeController: Select Add Food button
 	FridgeController->>ItemScreen: Opens
