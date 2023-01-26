@@ -1,1 +1,12 @@
-write code
+FROM python:3.11-alpine
+ENV PYTHONUNBUFFERD 1
+
+COPY ./requirements.txt /requirements.txt
+RUN pip install -r /requirements.txt
+
+RUN mkdir /data
+WORKDIR /data
+COPY ./data /data
+
+RUN adduser -D user
+USER user

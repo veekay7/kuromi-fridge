@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data:/data
+    tty:
+      true
