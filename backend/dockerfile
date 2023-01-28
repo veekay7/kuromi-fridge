@@ -1,12 +1,13 @@
 FROM python:3.11-alpine
-ENV PYTHONUNBUFFERD 1
 
-COPY ./requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+ENV PYTHONUNBUFFERD 1
 
 RUN mkdir /data
 WORKDIR /data
-COPY ./data /data
+
+COPY requirements.txt requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 RUN adduser -D user
 USER user
