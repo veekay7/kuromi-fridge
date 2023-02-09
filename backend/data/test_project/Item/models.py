@@ -11,4 +11,6 @@ class Item(models.Model):
     barcode = models.PositiveBigIntegerField(null=True)
     name = models.TextField()
     expire_date = models.DateField()
-    status = models.CharField(choices=LOCATION_SET, max_length=16, null=True)
+    location = models.CharField(choices=LOCATION_SET, max_length=16, null=True)
+    image = models.ImageField(upload_to='images/', null=True)
+    amount = models.PositiveIntegerField(null=True)
