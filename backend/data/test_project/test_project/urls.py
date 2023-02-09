@@ -21,8 +21,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Item.urlsをincludeする
     path('api/', include('Item.urls')),
+    path('api/', include('WishItem.urls')),
 ]
 
 
