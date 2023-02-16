@@ -18,11 +18,6 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 - docker-compose.prod.yml
 
 # APIサーバーの起動
-コンテナの起動（コンテナの起動で説明）
-```sh
-docker compose
-```
-
 コンテナに接続
 ```sh
 docker compose exec api sh
