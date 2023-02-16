@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class FridgeViewController: UIViewController
 {
     @IBOutlet weak var lblSort: UILabel!
@@ -41,14 +42,31 @@ class FridgeViewController: UIViewController
             (action: UIAction) in self.update(number: action.title)
         }
         btnSortItems.menu = UIMenu(children: [
-                        UIAction(title: "All", state:.on, handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "Refridgerator", handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "Freezer", handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "Alphabetical Order", handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "By Expiry", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "All", state:.on, handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "Refridgerator", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "Freezer", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "Alphabetical Order", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "By Expiry", handler: Cb_btnSortItems_MenuClosed),
         ])
         btnSortItems.showsMenuAsPrimaryAction = true
         btnSortItems.changesSelectionAsPrimaryAction = true
+        
+        let url: URL = URL(string: "https://kuromi.amota.net/api/items")!
+        let task: URLSessionTask = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("error", error)
+            }
+            
+            do {
+                let decoded = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments) as! [Any]
+                let items = decoded.map { (item) -> [String: Any] in return item as! [String: Any]}
+                print(items)
+            } catch {
+                print(error)
+            }
+        }
+
+        task.resume()
     }
     
     
