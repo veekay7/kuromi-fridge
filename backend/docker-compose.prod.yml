@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  api:
+    networks:
+      - proxy-network
+    environment:
+      VIRTUAL_HOST: kuromi.amota.net
+      LETSENCRYPT_HOST: kuromi.amota.net
+
+networks:
+  proxy-network:
+    external: true
