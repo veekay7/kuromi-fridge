@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-c#2a=cyvowyt#-2rm2gd-fp+#i0bj-s-9@s1$jcr937%!_w2du
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "kuromi.amota.net",
+]
 
 
 # Application definition
