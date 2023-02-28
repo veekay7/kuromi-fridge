@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class FridgeViewController: UIViewController
 {
     @IBOutlet weak var lblSort: UILabel!
@@ -41,16 +42,102 @@ class FridgeViewController: UIViewController
             (action: UIAction) in self.update(number: action.title)
         }
         btnSortItems.menu = UIMenu(children: [
-                        UIAction(title: "All", state:.on, handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "Refridgerator", handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "Freezer", handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "Alphabetical Order", handler: Cb_btnSortItems_MenuClosed),
-                        UIAction(title: "By Expiry", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "All", state:.on, handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "Refridgerator", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "Freezer", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "Alphabetical Order", handler: Cb_btnSortItems_MenuClosed),
+            UIAction(title: "By Expiry", handler: Cb_btnSortItems_MenuClosed),
         ])
         btnSortItems.showsMenuAsPrimaryAction = true
         btnSortItems.changesSelectionAsPrimaryAction = true
+        
+//        let item = Item(id: nil, barcode: 01234, name: "カレーパン", expire_date: "2023-08-19", location: "refrigerated", amount: 2)
+//        print(searchItems(barcode: "12345"))
+//        addItem(item: item)
+//        print(searchItems(barcode: ""))
+        deleteItemById(id: "1")
+//        print(searchItems(barcode: ""))
     }
     
+    func searchItems(barcode: String) -> [Item] {
+        let url = URL(string: "https://kuromi.amota.net/api/items/?barcode=" + barcode)!
+        var request = URLRequest(url: url)
+        var rowData = Data()
+        let semaphore = DispatchSemaphore(value: 0)
+        let decoder: JSONDecoder = JSONDecoder()
+        request.httpMethod = "GET"
+
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard let data = data else { return }
+            rowData = data
+            semaphore.signal()
+        }
+        task.resume()
+        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+
+        do {
+            let items: [Item] = try decoder.decode([Item].self, from: rowData)
+            return items
+        } catch let e {
+            print("JSON Decode Error :\(e)")
+            fatalError()
+        }
+    }
+    
+    func searchItemById(id: String) -> Item {
+        let url = URL(string: "https://kuromi.amota.net/api/items/" + id)!
+        var request = URLRequest(url: url)
+        var rowData = Data()
+        let semaphore = DispatchSemaphore(value: 0)
+        let decoder: JSONDecoder = JSONDecoder()
+        request.httpMethod = "GET"
+
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard let data = data else { return }
+            rowData = data
+            semaphore.signal()
+        }
+        task.resume()
+        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+
+        do {
+            let item: Item = try decoder.decode(Item.self, from: rowData)
+            return item
+        } catch let e {
+            print("JSON Decode Error :\(e)")
+            fatalError()
+        }
+    }
+    
+    func addItem(item: Item) {
+        let url = URL(string: "https://kuromi.amota.net/api/items/")!
+        var request = URLRequest(url: url)
+        let encoder: JSONEncoder = JSONEncoder()
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let item = try! encoder.encode(item)
+        request.httpBody = item
+        // use NSURLSessionDataTask
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {data, response, error in
+            if (error == nil) {
+                let result = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
+                print(result)
+            } else {
+                print(error as Any)
+            }
+        })
+        task.resume()
+    }
+    
+    func deleteItemById(id: String) {
+        let url = URL(string: "https://kuromi.amota.net/api/items/" + id)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        }
+        task.resume()
+    }
     
     func update(number:String)
     {
