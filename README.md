@@ -1,1 +1,1 @@
-# kuromi-fridge
+# Smart Fridge System
